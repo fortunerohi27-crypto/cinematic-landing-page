@@ -1,0 +1,85 @@
+// Prisma schema for Nex Studio backend
+// Local dev uses SQLite (file at prisma/dev.db). To swap to Postgres in production,
+// change provider to "postgresql" and update DATABASE_URL.
+//
+// Note: SQLite doesn't support enums, so `role` is stored as a string. The TS code
+// in src/lib/auth/guard.ts narrows the type via a runtime check.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  name         String?
+  role         String   @default("USER")
+  createdAt    DateTime @default(now())
+
+  sessions          Session[]
+  contactSubmissions ContactSubmission[]
+  newsletter        NewsletterSubscriber?
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  token     String   @unique
+  userId    String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model ContactSubmission {
+  id        String   @id @default(cuid())
+  name      String
+  email     String
+  message   String
+  createdAt DateTime @default(now())
+
+  userId String?
+  user   User?   @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([createdAt])
+}
+
+model NewsletterSubscriber {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  confirmed Boolean  @default(true)
+  createdAt DateTime @default(now())
+
+  userId String? @unique
+  user   User?   @relation(fields: [userId], references: [id], onDelete: SetNull)
+}
+
+model GalleryItem {
+  id        String   @id @default(cuid())
+  src       String
+  alt       String
+  caption   String?
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+
+  @@index([order])
+}
+
+model Testimonial {
+  id        String   @id @default(cuid())
+  name      String
+  role      String
+  text      String
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+
+  @@index([order])
+}

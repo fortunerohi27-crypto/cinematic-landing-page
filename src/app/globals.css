@@ -1,0 +1,78 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground-rgb: 255, 255, 255;
+  --background-start-rgb: 5, 5, 5;
+  --background-end-rgb: 10, 15, 26;
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: radial-gradient(
+      circle at top center,
+      rgba(10, 15, 26, 0.9),
+      rgba(5, 5, 5, 1)
+    )
+    rgb(var(--background-start-rgb));
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+@layer components {
+  .glass {
+    @apply backdrop-blur-xl bg-white/5 border border-white/10 shadow-2xl;
+  }
+
+  .glass-card {
+    @apply glass rounded-3xl p-6 transition-all duration-500 hover:bg-white/10 hover:border-white/20 hover:shadow-[0_0_30px_rgba(0,242,255,0.15)];
+  }
+
+  .text-glow {
+    text-shadow: 0 0 15px rgba(0, 242, 255, 0.6), 0 0 30px rgba(0, 242, 255, 0.3);
+  }
+}
+
+/* Custom scrollbar for premium feel */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #0a0a0a;
+}
+::-webkit-scrollbar-thumb {
+  background: #00f2ff;
+  border-radius: 10px;
+}
+
+/* Marquee — used by the client logo strip. Pauses on hover for legibility. */
+@keyframes marquee-scroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+.animate-scroll {
+  animation: marquee-scroll 28s linear infinite;
+}
+.animate-scroll:hover {
+  animation-play-state: paused;
+}
+
+/* Mobile / reduced-motion fallback for the hero 3D object. A static, slowly
+   pulsing radial gradient in the accent color, positioned where the canvas
+   would be. */
+.gradient-orb {
+  background: radial-gradient(
+    circle at 50% 50%,
+    rgba(0, 242, 255, 0.55) 0%,
+    rgba(0, 242, 255, 0.18) 35%,
+    rgba(0, 242, 255, 0)    70%
+  );
+  filter: blur(40px);
+  animation: orb-pulse 6s ease-in-out infinite;
+}
+@keyframes orb-pulse {
+  0%, 100% { transform: scale(1);    opacity: 0.9; }
+  50%      { transform: scale(1.08); opacity: 1;   }
+}
