@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic';
 // GET /api/admin/contact
 // Admin only. Returns all contact submissions, newest first.
 
